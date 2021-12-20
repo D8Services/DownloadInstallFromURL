@@ -67,6 +67,12 @@ special="$7"
 
 ################################# Quick Checks! ###############################################
 
+# Moved to prevent errors for logging - TT
+## if the log file path does not exist, lets create it.
+if [[ ! -d "/Library/Management/Logs/" ]]; then
+	mkdir -p "/Library/Management/Logs/"
+fi
+
 if [ -z "${url}" ]; then
 	echo "No URL variable specified to download files from, kinda need that."
 	echo "Read script comments for more usage information"
@@ -85,11 +91,6 @@ fi
 
 ## Make a file name out of our uuid and file type
 dmgfile="${uniqueID}.${type}"
-
-## if the log file path does not exist, lets create it.
-if [[ ! -d "/Library/Management/Logs/" ]]; then
-	mkdir -p "/Library/Management/Logs/"
-fi
 
 ## log some header stuff to the file
 /bin/echo "--" >> ${logfile}
