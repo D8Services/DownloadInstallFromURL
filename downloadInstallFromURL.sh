@@ -181,7 +181,7 @@ if [[ "${type}" == "zip" ]]; then
 	zipExtension="${zipAppName##*.}"
 	zipFilename="${zipAppName%.*}"
 	if [[ "$zipExtension" == "app" ]];then
-		/bin/echo "`date`: Identified item \"${filename}\", installing." >> ${logfile}
+		/bin/echo "`date`: Identified item \"${zipFilename}\", installing." >> ${logfile}
 		unzip /tmp/${dmgfile} -d /Applications/
 	else
 		/bin/echo "`date`: Identified item \"${$zipAppName}\", but no handler created as yet." >> ${logfile}
