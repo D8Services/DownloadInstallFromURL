@@ -27,6 +27,8 @@
 # 3. You can run it from JAMF with dynamic variables passed as parameters to the script
 #############################################################################################
 
+# Updates
+# Tomos Tyler - D8 Service APR 2022 - Add ZIP download install and license agreement agreement to dmg
 
 ## Lets generate a UUID so we have a unique id for un-important element names ( no need to change )
 uniqueID=$(uuidgen)
@@ -46,7 +48,7 @@ url="$4"
 ## EXAMPLE: 'https://com.file.com/file.dmg'
 as_url="$5"
 
-## What type of file are we expecting to download. dmg or pkg, 
+## What type of file are we expecting to download. dmg or pkg or zip, 
 ## should be pulled as $6 if using jamf
 type="$6"
 
@@ -132,7 +134,7 @@ IFS=$'\n'
 ## If we have a DMG, lets open it up and see whats inside
 if [[ "${type}" == "dmg" ]]; then
 	/bin/echo "`date`: Mounting installer disk image." >> ${logfile}
-	volname="$(/usr/bin/hdiutil attach /tmp/${dmgfile} -nobrowse | tail -1 | awk -F"\t" '{print $3}')"
+	volname="$(echo "Y" | /usr/bin/hdiutil attach /tmp/${dmgfile} -nobrowse | tail -1 | awk -F"\t" '{print $3}')"
 
 	## if we do not have any special command specified then loop through the content of the DMG
 	if [[ "${special}" == "" ]]; then
@@ -168,6 +170,22 @@ fi
 ## If its a PKG, lets just go for a straight install.. if every vendor just gave us pkg.. utopia
 if [[ "${type}" == "pkg" ]]; then
 	installer -pkg "/tmp/${dmgfile}" -target /
+	/bin/echo "`date`: Deleting package file." >> ${logfile}
+fi
+
+## If its a ZIP, lets expand the file to see whats inside 
+if [[ "${type}" == "zip" ]]; then
+	# Lets look inside the zip to see what we have.
+	zipAppName=$(unzip -l  "/tmp/${dmgfile}" | egrep "^([^/]*/?){1}$" | sed -n 3p | xargs -n 1 basename | tail -1)
+	
+	zipExtension="${zipAppName##*.}"
+	zipFilename="${zipAppName%.*}"
+	if [[ "$zipExtension" == "app" ]];then
+		/bin/echo "`date`: Identified item \"${filename}\", installing." >> ${logfile}
+		unzip /tmp/${dmgfile} -d /Applications/
+	else
+		/bin/echo "`date`: Identified item \"${$zipAppName}\", but no handler created as yet." >> ${logfile}
+	fi
 	/bin/echo "`date`: Deleting package file." >> ${logfile}
 fi
 
