@@ -10,6 +10,8 @@
  Now updated with dual URL support for M1 Processors, You can provide a URL for normal downloads
  Which is required, and an Alt URL for M1 software versions. SCript will detect which version
  To download and install based on local processor type.
+ 
+ Now updated with support for zip files deployment packages
 
  Tips on using this.....
 
