@@ -23,3 +23,5 @@
     any way that you want. ( Jamf users think patch managment )
 
  3. You can run it from JAMF with dynamic variables passed as parameters to the script
+
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
